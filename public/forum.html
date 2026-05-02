@@ -206,10 +206,8 @@ button:hover {
 <div class="nav">
     <a href="apply.html" class="play-link">➡️ | Начать играть</a>
     <a href="forum.html">Главная</a>
-    <a href="dev.html">Форумы</a>
-    <a href="dev.html">Сообщество</a>
     <a href="dev.html">Правила</a>
-    <a href="dev.html">Магазин</a>
+    <a href="admin.html" id="adminBtn" style="display:none;">Панель администратора</a>
 </div>
 
 <div class="container">
@@ -272,12 +270,25 @@ button:hover {
 </div>
 
 <script>
-if (localStorage.getItem("auth") !== "true") {
-    window.location.href = "login.html";
-}
+async function loadUser() {
+    const res = await fetch("/api/profile", {
+        credentials: "include"
+    });
 
-const currentUser = localStorage.getItem("currentUser");
-document.getElementById("user").innerText = currentUser;
+    if (res.status === 401) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const user = await res.json();
+
+    document.getElementById("user").innerText = user.login;
+
+    // 👇 показываем кнопку админа
+    if (user.role === "admin") {
+        document.getElementById("adminBtn").style.display = "inline-block";
+    }
+}
 
 function goForum() {
     window.location.href = "forum.html";
@@ -287,12 +298,16 @@ function goProfile() {
     window.location.href = "profile.html";
 }
 
-function logout() {
-    localStorage.removeItem("auth");
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("role");
+async function logout() {
+    await fetch("/api/logout", {
+        method: "POST",
+        credentials: "include"
+    });
+
     window.location.href = "login.html";
 }
+
+loadUser();
 </script>
 
 </body>
