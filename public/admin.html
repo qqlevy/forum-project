@@ -13,7 +13,7 @@ body {
 }
 
 .box {
-    max-width:600px;
+    max-width:700px;
     margin:auto;
     background:rgba(255,255,255,0.05);
     padding:30px;
@@ -30,20 +30,54 @@ input, select {
     color:white;
 }
 
+.application {
+    margin-top:10px;
+    padding:14px;
+    background:#1c1c1c;
+    border-radius:10px;
+    line-height:1.6;
+}
+
+.status {
+    color:#4CAF50;
+    font-weight:bold;
+}
+
+.reject {
+    background:#b83a3a;
+}
+
+.reject:hover {
+    background:#9f3030;
+}
+
 button {
-    padding:10px;
+    padding:10px 15px;
     border:none;
     border-radius:10px;
     background:#4CAF50;
     color:white;
     cursor:pointer;
+    margin-top:8px;
+}
+
+button:hover {
+    background:#45a049;
 }
 
 .user {
     margin-top:10px;
-    padding:10px;
+    padding:12px;
     background:#1c1c1c;
     border-radius:10px;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.role {
+    color:#4CAF50;
+    font-weight:bold;
 }
 </style>
 </head>
@@ -52,6 +86,8 @@ button {
 
 <div class="box">
     <h2>Админ панель</h2>
+
+    <button onclick="goForum()">Вернуться на форум</button>
 
     <h3>Назначить роль</h3>
 
@@ -67,16 +103,45 @@ button {
 
     <h3>Список пользователей</h3>
     <div id="users"></div>
+    <h3>Заявки</h3>
+<div id="applications"></div>
 </div>
 
 <script>
-if (localStorage.getItem("role") !== "admin") {
-    alert("Нет доступа");
-    window.location.href = "forum.html";
+async function checkAdmin() {
+    const res = await fetch("/api/profile", {
+        credentials: "include"
+    });
+
+    if (res.status === 401) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const user = await res.json();
+
+    if (user.role !== "admin") {
+        alert("Нет доступа");
+        window.location.href = "forum.html";
+        return;
+    }
+
+renderUsers();
+renderApplications();
 }
 
-function renderUsers() {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+async function renderUsers() {
+    const res = await fetch("/api/users", {
+        credentials: "include"
+    });
+
+    if (res.status === 403) {
+        alert("Нет доступа");
+        window.location.href = "forum.html";
+        return;
+    }
+
+    const users = await res.json();
     const block = document.getElementById("users");
 
     block.innerHTML = "";
@@ -84,7 +149,8 @@ function renderUsers() {
     users.forEach(u => {
         block.innerHTML += `
             <div class="user">
-                ${u.login} — ${u.role}
+                <span>${u.login}</span>
+                <span class="role">${u.role}</span>
             </div>
         `;
     });
@@ -93,35 +159,108 @@ function renderUsers() {
 async function setRole() {
     const login = document.getElementById("login").value.trim();
     const role = document.getElementById("role").value;
-    const currentRole = localStorage.getItem("role");
 
     if (login === "") {
         alert("Введи логин пользователя");
         return;
     }
 
-    let res = await fetch("/api/users/role", {
+    const res = await fetch("/api/users/role", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            login: login,
-            role: role,
-            currentRole: currentRole
-        })
+        credentials: "include",
+        body: JSON.stringify({ login, role })
     });
 
-    let data = await res.json();
+    const data = await res.json();
 
-    alert(data.message);
+    alert(data.message || "Роль изменена");
 
     if (data.success) {
+        document.getElementById("login").value = "";
         renderUsers();
     }
 }
 
-renderUsers();
+function goForum() {
+    window.location.href = "forum.html";
+}
+
+checkAdmin();
+
+async function renderApplications() {
+    const res = await fetch("/api/applications", {
+        credentials: "include"
+    });
+
+    if (res.status === 403) {
+        return;
+    }
+
+    const applications = await res.json();
+    const block = document.getElementById("applications");
+
+    block.innerHTML = "";
+
+    if (applications.length === 0) {
+        block.innerHTML = "<p>Заявок пока нет</p>";
+        return;
+    }
+
+    applications.forEach(app => {
+        let statusText = "На рассмотрении";
+
+        if (app.status === "accepted") {
+            statusText = "Принята";
+        }
+
+        if (app.status === "rejected") {
+            statusText = "Отклонена";
+        }
+
+        block.innerHTML += `
+            <div class="application">
+                <b>Пользователь:</b> ${app.user_login}<br>
+                <b>RP ник:</b> ${app.nickname}<br>
+                <b>Возраст:</b> ${app.age}<br>
+                <b>Департамент:</b> ${app.department}<br>
+                <b>Опыт RP:</b> ${app.experience}<br>
+                <b>Причина:</b> ${app.reason}<br>
+                <b>Статус:</b> <span class="status">${statusText}</span><br><br>
+
+                <button onclick="changeApplicationStatus(${app.id}, 'accepted')">
+                    Принять
+                </button>
+
+                <button class="reject" onclick="changeApplicationStatus(${app.id}, 'rejected')">
+                    Отклонить
+                </button>
+            </div>
+        `;
+    });
+}
+
+async function changeApplicationStatus(id, status) {
+    const res = await fetch("/api/applications/status", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({ id, status })
+    });
+
+    const data = await res.json();
+
+    alert(data.message);
+
+    if (data.success) {
+        renderApplications();
+    }
+}
+
 </script>
 
 </body>
