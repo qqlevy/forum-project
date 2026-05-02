@@ -41,6 +41,14 @@ h1 {
     align-items: center;
     justify-content: center;
     font-size: 56px;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
 }
 
 .account-name {
@@ -238,7 +246,10 @@ button:hover {
     <h1>Ваш аккаунт</h1>
 
     <div class="account">
-        <div class="avatar" id="avatarLetter">?</div>
+        <div class="avatar">
+            <img id="avatarImg">
+            <span id="avatarLetter">?</span>
+        </div>
 
         <div>
             <div class="account-name" id="username">Пользователь</div>
@@ -248,21 +259,21 @@ button:hover {
 
     <div class="main">
 
-       <div class="steps">
-    <h2>Как начать играть?</h2>
+        <div class="steps">
+            <h2>Как начать играть?</h2>
 
-    <div class="step active">
-        <div class="step-icon">📒</div>
-        <div>Подайте заявку</div>
-    </div>
-</div>
+            <div class="step active">
+                <div class="step-icon">📒</div>
+                <div>Подайте заявку</div>
+            </div>
+        </div>
 
         <div>
 
             <div class="status-card hidden" id="statusCard">
                 <div class="status-head">
                     <div class="status-title">Статус заявки</div>
-                    <div class="badge">НА РАССМОТРЕНИИ</div>
+                    <div class="badge" id="statusBadge">НА РАССМОТРЕНИИ</div>
                 </div>
 
                 <div class="status-text">
@@ -315,30 +326,55 @@ button:hover {
 </div>
 
 <script>
-if (localStorage.getItem("auth") !== "true") {
-    window.location.href = "login.html";
+let currentUser = null;
+
+async function loadUser() {
+    const res = await fetch("/api/profile", {
+        credentials: "include"
+    });
+
+    if (res.status === 401) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    currentUser = await res.json();
+
+    document.getElementById("username").innerText = currentUser.login;
+
+    const avatarImg = document.getElementById("avatarImg");
+    const avatarLetter = document.getElementById("avatarLetter");
+
+    if (currentUser.avatar) {
+        avatarImg.src = currentUser.avatar;
+        avatarImg.style.display = "block";
+        avatarLetter.style.display = "none";
+    } else {
+        avatarLetter.innerText = currentUser.login[0].toUpperCase();
+    }
+
+    loadApplication();
 }
 
-const username = localStorage.getItem("currentUser") || "Пользователь";
+async function loadApplication() {
+    const res = await fetch("/api/application", {
+        credentials: "include"
+    });
 
-document.getElementById("username").innerText = username;
-document.getElementById("avatarLetter").innerText = username[0].toUpperCase();
+    const application = await res.json();
 
-const applyKey = "application_" + username;
-const savedApplication = JSON.parse(localStorage.getItem(applyKey));
-
-if (savedApplication) {
-    showApplication(savedApplication);
+    if (application) {
+        showApplication(application);
+    }
 }
 
-function sendApply() {
+async function sendApply() {
     const application = {
         nickname: document.getElementById("nickname").value.trim(),
         age: document.getElementById("age").value.trim(),
         department: document.getElementById("department").value,
         experience: document.getElementById("experience").value.trim(),
-        reason: document.getElementById("reason").value.trim(),
-        date: new Date().toLocaleString("ru-RU")
+        reason: document.getElementById("reason").value.trim()
     };
 
     if (!application.nickname || !application.age || !application.department || !application.experience || !application.reason) {
@@ -346,23 +382,50 @@ function sendApply() {
         return;
     }
 
-    localStorage.setItem(applyKey, JSON.stringify(application));
+    const res = await fetch("/api/apply", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(application)
+    });
 
-    alert("Заявка отправлена!");
-    showApplication(application);
+    const data = await res.json();
+
+    if (data.success) {
+        alert("Заявка отправлена!");
+        loadApplication();
+    } else {
+        alert(data.message || "Ошибка отправки заявки");
+    }
 }
 
 function showApplication(application) {
     document.getElementById("statusCard").classList.remove("hidden");
     document.getElementById("formCard").classList.add("hidden");
 
-    document.getElementById("applyDate").innerText = application.date;
-    document.getElementById("applyDepartment").innerText = application.department;
+    document.getElementById("applyDate").innerText = application.created_at || "—";
+    document.getElementById("applyDepartment").innerText = application.department || "—";
+
+    let statusText = "НА РАССМОТРЕНИИ";
+
+    if (application.status === "accepted") {
+        statusText = "ОДОБРЕНО";
+    }
+
+    if (application.status === "rejected") {
+        statusText = "ОТКЛОНЕНО";
+    }
+
+    document.getElementById("statusBadge").innerText = statusText;
 
     document.getElementById("readyTitle").innerText = "Все готово.";
     document.getElementById("readyText").innerText =
         "Мы получили твою заявку. Вернись на эту страницу позже, чтобы получить наше решение. Срок рассмотрения заявки — до 14 дней.";
 }
+
+loadUser();
 </script>
 
 </body>
