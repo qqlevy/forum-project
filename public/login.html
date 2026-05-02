@@ -51,24 +51,21 @@ button {
 
 <script>
 async function login() {
-    let login = document.getElementById("login").value;
-    let password = document.getElementById("password").value;
+    const login = document.getElementById("login").value;
+    const password = document.getElementById("password").value;
 
-    let res = await fetch("/api/login", {
+    const res = await fetch("/api/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include", // 🔥 ВАЖНО (сессия)
         body: JSON.stringify({ login, password })
     });
 
-    let data = await res.json();
+    const data = await res.json();
 
     if (data.success) {
-        localStorage.setItem("auth", "true");
-        localStorage.setItem("currentUser", data.user.login);
-        localStorage.setItem("role", data.user.role);
-
         window.location.href = "forum.html";
     } else {
         alert(data.message);
