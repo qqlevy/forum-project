@@ -51,18 +51,24 @@ button {
 
 <script>
 async function register() {
-    let login = document.getElementById("login").value;
-    let password = document.getElementById("password").value;
+    const login = document.getElementById("login").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-    let res = await fetch("/api/register", {
+    if (!login || !password) {
+        alert("Заполни логин и пароль");
+        return;
+    }
+
+    const res = await fetch("/api/register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify({ login, password })
     });
 
-    let data = await res.json();
+    const data = await res.json();
 
     alert(data.message);
 
@@ -70,7 +76,6 @@ async function register() {
         window.location.href = "login.html";
     }
 }
-
 </script>
 
 </body>
