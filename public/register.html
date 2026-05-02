@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Register</title>
+
+<style>
+body {
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.box {
+    background:rgba(255,255,255,0.05);
+    padding:30px;
+    border-radius:10px;
+    width:300px;
+    text-align:center;
+}
+
+input {
+    width:90%;
+    padding:10px;
+    margin:8px 0;
+}
+
+button {
+    padding:10px 20px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>Регистрация</h2>
+
+    <input id="login" placeholder="Логин">
+    <input id="password" type="password" placeholder="Пароль">
+
+    <button onclick="register()">Создать аккаунт</button>
+
+    <p><a href="login.html">Вход</a></p>
+</div>
+
+<script>
+async function register() {
+    let login = document.getElementById("login").value;
+    let password = document.getElementById("password").value;
+
+    let res = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ login, password })
+    });
+
+    let data = await res.json();
+
+    alert(data.message);
+
+    if (data.success) {
+        window.location.href = "login.html";
+    }
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+
+<style>
+body {
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    padding:40px;
+}
+
+.box {
+    max-width:600px;
+    margin:auto;
+    background:rgba(255,255,255,0.05);
+    padding:30px;
+    border-radius:18px;
+}
+
+input, select {
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    border-radius:10px;
+    border:none;
+    background:#222;
+    color:white;
+}
+
+button {
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#4CAF50;
+    color:white;
+    cursor:pointer;
+}
+
+.user {
+    margin-top:10px;
+    padding:10px;
+    background:#1c1c1c;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>Админ панель</h2>
+
+    <h3>Назначить роль</h3>
+
+    <input id="login" placeholder="Логин пользователя">
+
+    <select id="role">
+        <option value="user">Пользователь</option>
+        <option value="moderator">Модератор</option>
+        <option value="admin">Администратор</option>
+    </select>
+
+    <button onclick="setRole()">Выдать роль</button>
+
+    <h3>Список пользователей</h3>
+    <div id="users"></div>
+</div>
+
+<script>
+if (localStorage.getItem("role") !== "admin") {
+    alert("Нет доступа");
+    window.location.href = "forum.html";
+}
+
+function renderUsers() {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const block = document.getElementById("users");
+
+    block.innerHTML = "";
+
+    users.forEach(u => {
+        block.innerHTML += `
+            <div class="user">
+                ${u.login} — ${u.role}
+            </div>
+        `;
+    });
+}
+
+async function setRole() {
+    const login = document.getElementById("login").value.trim();
+    const role = document.getElementById("role").value;
+    const currentRole = localStorage.getItem("role");
+
+    if (login === "") {
+        alert("Введи логин пользователя");
+        return;
+    }
+
+    let res = await fetch("/api/users/role", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            login: login,
+            role: role,
+            currentRole: currentRole
+        })
+    });
+
+    let data = await res.json();
+
+    alert(data.message);
+
+    if (data.success) {
+        renderUsers();
+    }
+}
+
+renderUsers();
+</script>
+
+</body>
+</html>

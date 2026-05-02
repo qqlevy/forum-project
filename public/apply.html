@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Подача заявки</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #050505;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.page {
+    padding: 40px 55px;
+}
+
+h1 {
+    font-size: 40px;
+    margin: 0 0 45px;
+}
+
+.account {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    margin-bottom: 85px;
+}
+
+.avatar {
+    width: 90px;
+    height: 90px;
+    background: #85c45c;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+}
+
+.account-name {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.account-role {
+    font-size: 20px;
+    color: #dcdcdc;
+}
+
+.main {
+    display: grid;
+    grid-template-columns: 430px 1fr;
+    gap: 150px;
+    align-items: start;
+}
+
+.steps h2 {
+    font-size: 38px;
+    margin: 0 0 35px;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin: 25px 0;
+    color: #8d99a6;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.step-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #83909d;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.step.active {
+    color: #4CAF50;
+}
+
+.step.active .step-icon {
+    background: #4CAF50;
+    color: white;
+}
+
+.status-card {
+    background: linear-gradient(180deg, #151515, #101010);
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 24px 28px;
+    max-width: 1150px;
+}
+
+.status-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.status-title {
+    font-size: 26px;
+}
+
+.badge {
+    background: #3b2d00;
+    color: #ffd767;
+    padding: 10px 16px;
+    border-radius: 18px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.status-text {
+    color: #cfcfcf;
+    line-height: 1.6;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 14px;
+}
+
+.info-box {
+    background: #191919;
+    border: 1px solid #2d2d2d;
+    border-radius: 11px;
+    padding: 18px;
+}
+
+.info-label {
+    color: #8e8e8e;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.info-value {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.ready {
+    margin-top: 28px;
+}
+
+.ready h2 {
+    font-size: 38px;
+    margin: 0 0 12px;
+}
+
+.ready p {
+    color: #cfcfcf;
+    font-size: 19px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.form-card {
+    margin-top: 25px;
+    background: #111;
+    border: 1px solid #2c2c2c;
+    border-radius: 16px;
+    padding: 25px;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #202020;
+    color: white;
+    font-size: 15px;
+    outline: none;
+}
+
+textarea {
+    height: 100px;
+    resize: none;
+}
+
+button {
+    padding: 13px 22px;
+    border: none;
+    border-radius: 10px;
+    background: #4CAF50;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 1000px) {
+    .main {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <h1>Ваш аккаунт</h1>
+
+    <div class="account">
+        <div class="avatar" id="avatarLetter">?</div>
+
+        <div>
+            <div class="account-name" id="username">Пользователь</div>
+            <div class="account-role">Кандидат</div>
+        </div>
+    </div>
+
+    <div class="main">
+
+       <div class="steps">
+    <h2>Как начать играть?</h2>
+
+    <div class="step active">
+        <div class="step-icon">📒</div>
+        <div>Подайте заявку</div>
+    </div>
+</div>
+
+        <div>
+
+            <div class="status-card hidden" id="statusCard">
+                <div class="status-head">
+                    <div class="status-title">Статус заявки</div>
+                    <div class="badge">НА РАССМОТРЕНИИ</div>
+                </div>
+
+                <div class="status-text">
+                    Последняя заявка уже отправлена и ожидает проверки.
+                    Мы рассматриваем заявки в течение 14 дней.
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="info-label">Подана</div>
+                        <div class="info-value" id="applyDate">—</div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">Департамент</div>
+                        <div class="info-value" id="applyDepartment">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ready">
+                <h2 id="readyTitle">Подача заявки</h2>
+                <p id="readyText">
+                    Заполни анкету ниже. После отправки заявка будет передана администрации.
+                </p>
+            </div>
+
+            <div class="form-card" id="formCard">
+                <input id="nickname" placeholder="Ваш RP ник">
+                <input id="age" placeholder="Возраст">
+
+                <select id="department">
+                    <option value="">Выберите департамент</option>
+                    <option value="Полицейский Департамент Лос-Сантоса">Полицейский Департамент Лос-Сантоса</option>
+                    <option value="Департамент Шерифа Лос-Сантоса">Департамент Шерифа Лос-Сантоса</option>
+                    <option value="EMS">EMS</option>
+                    <option value="Гражданский">Гражданский</option>
+                </select>
+
+                <textarea id="experience" placeholder="Опыт RP"></textarea>
+                <textarea id="reason" placeholder="Почему хотите попасть к нам?"></textarea>
+
+                <button onclick="sendApply()">Отправить заявку</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+if (localStorage.getItem("auth") !== "true") {
+    window.location.href = "login.html";
+}
+
+const username = localStorage.getItem("currentUser") || "Пользователь";
+
+document.getElementById("username").innerText = username;
+document.getElementById("avatarLetter").innerText = username[0].toUpperCase();
+
+const applyKey = "application_" + username;
+const savedApplication = JSON.parse(localStorage.getItem(applyKey));
+
+if (savedApplication) {
+    showApplication(savedApplication);
+}
+
+function sendApply() {
+    const application = {
+        nickname: document.getElementById("nickname").value.trim(),
+        age: document.getElementById("age").value.trim(),
+        department: document.getElementById("department").value,
+        experience: document.getElementById("experience").value.trim(),
+        reason: document.getElementById("reason").value.trim(),
+        date: new Date().toLocaleString("ru-RU")
+    };
+
+    if (!application.nickname || !application.age || !application.department || !application.experience || !application.reason) {
+        alert("Заполни все поля");
+        return;
+    }
+
+    localStorage.setItem(applyKey, JSON.stringify(application));
+
+    alert("Заявка отправлена!");
+    showApplication(application);
+}
+
+function showApplication(application) {
+    document.getElementById("statusCard").classList.remove("hidden");
+    document.getElementById("formCard").classList.add("hidden");
+
+    document.getElementById("applyDate").innerText = application.date;
+    document.getElementById("applyDepartment").innerText = application.department;
+
+    document.getElementById("readyTitle").innerText = "Все готово.";
+    document.getElementById("readyText").innerText =
+        "Мы получили твою заявку. Вернись на эту страницу позже, чтобы получить наше решение. Срок рассмотрения заявки — до 14 дней.";
+}
+</script>
+
+</body>
+</html>

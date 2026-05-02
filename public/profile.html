@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Профиль</title>
+
+<style>
+* {
+    box-sizing:border-box;
+}
+
+body {
+    margin:0;
+    background:#101010;
+    color:#d7d7d7;
+    font-family:Arial, sans-serif;
+}
+
+.top {
+    background:#0a0a0a;
+    padding:16px 45px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.top a {
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+button {
+    border:none;
+    border-radius:8px;
+    padding:9px 14px;
+    background:#4CAF50;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover {
+    background:#45a049;
+}
+
+.page {
+    max-width:1280px;
+    margin:35px auto;
+    padding:0 25px;
+}
+
+.profile-cover {
+    height:190px;
+    background:
+        linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.25)),
+        url("profile-cover.jpg");
+    background-size:cover;
+    background-position:center;
+    border-radius:4px 4px 0 0;
+    position:relative;
+}
+
+.cover-actions {
+    position:absolute;
+    right:15px;
+    top:15px;
+    display:flex;
+}
+
+.cover-btn {
+    background:rgba(0,0,0,0.35);
+    color:white;
+    padding:12px 16px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:14px;
+    border-right:1px solid rgba(255,255,255,0.15);
+}
+
+.cover-btn:hover {
+    background:rgba(0,0,0,0.55);
+}
+
+.profile-main {
+    background:#3a3a3a;
+    min-height:72px;
+    display:flex;
+    align-items:center;
+    padding:0 25px 0 145px;
+    position:relative;
+}
+
+.avatar {
+    width:115px;
+    height:115px;
+    background:#85c45c;
+    border-radius:6px;
+    position:absolute;
+    left:25px;
+    top:-70px;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:58px;
+    color:white;
+}
+
+.avatar img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+}
+
+.user-info h1 {
+    margin:0;
+    color:white;
+    font-size:28px;
+}
+
+.role {
+    display:inline-block;
+    margin-top:8px;
+    padding:5px 10px;
+    background:#111;
+    color:white;
+    font-size:14px;
+}
+
+.stats {
+    display:flex;
+    gap:45px;
+    margin-left:auto;
+}
+
+.stat-title {
+    font-size:12px;
+    color:#c0c0c0;
+    font-weight:bold;
+    text-transform:uppercase;
+}
+
+.stat-value {
+    color:white;
+    margin-top:6px;
+    font-weight:bold;
+}
+
+.my-content {
+    margin-left:25px;
+    background:#ddd;
+    color:#111;
+}
+
+.layout {
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:25px;
+    margin-top:25px;
+}
+
+.side-box, .content-box {
+    background:#1c1c1c;
+    border:1px solid #333;
+    border-radius:4px;
+    margin-bottom:18px;
+}
+
+.side-title, .content-title {
+    background:#242424;
+    padding:14px 16px;
+    font-weight:bold;
+    color:white;
+}
+
+.side-body, .content-body {
+    padding:18px;
+}
+
+.reputation {
+    text-align:center;
+}
+
+.rep-number {
+    font-size:28px;
+    color:white;
+}
+
+.muted {
+    color:#aaa;
+}
+
+.warning-box {
+    display:flex;
+    gap:15px;
+    align-items:center;
+    border:1px solid #444;
+    border-radius:5px;
+    padding:15px;
+}
+
+.circle {
+    width:28px;
+    height:28px;
+    border:4px solid #d7d7d7;
+    border-radius:50%;
+}
+
+.personal-row {
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid #333;
+}
+
+.personal-row:last-child {
+    border-bottom:none;
+}
+
+.tabs {
+    display:flex;
+    background:#3a3a3a;
+}
+
+.tab {
+    flex:1;
+    text-align:center;
+    padding:14px;
+    font-weight:bold;
+    color:white;
+}
+
+.tab.active {
+    background:#1c1c1c;
+}
+
+.activity-empty {
+    padding:35px;
+    text-align:center;
+    color:#cfcfcf;
+}
+
+.app-status {
+    margin-top:18px;
+    background:#151515;
+    border:1px solid #333;
+    border-radius:6px;
+    padding:16px;
+    line-height:1.6;
+}
+
+.app-status b {
+    color:#4CAF50;
+}
+
+.modal {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
+}
+
+.modal-box {
+    width:420px;
+    background:#1b1b1b;
+    border:1px solid #333;
+    border-radius:14px;
+    padding:25px;
+    box-shadow:0 0 35px rgba(0,0,0,0.8);
+}
+
+.modal-box h2 {
+    margin-top:0;
+    color:white;
+}
+
+.modal-box label {
+    display:block;
+    margin-top:15px;
+    margin-bottom:8px;
+    color:#ccc;
+    font-weight:bold;
+}
+
+.modal-box input {
+    width:100%;
+    color:white;
+    background:#222;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #333;
+}
+
+.modal-actions {
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:20px;
+}
+
+.close-btn {
+    background:#555;
+}
+
+.close-btn:hover {
+    background:#666;
+}
+
+@media(max-width:850px) {
+    .layout {
+        grid-template-columns:1fr;
+    }
+
+    .profile-main {
+        padding:70px 20px 20px;
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .avatar {
+        left:20px;
+    }
+
+    .stats {
+        margin-left:0;
+        margin-top:20px;
+        gap:25px;
+        flex-wrap:wrap;
+    }
+
+    .my-content {
+        margin-left:0;
+        margin-top:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+    <a href="forum.html">Test Role Play Forum</a>
+
+    <div>
+        <button onclick="goForum()">Форум</button>
+        <button onclick="logout()">Выйти</button>
+    </div>
+</div>
+
+<div class="page">
+
+    <div class="profile-cover" id="profileCover">
+        <div class="cover-actions">
+            <button class="cover-btn" onclick="openEditProfile()">✎ Изменить профиль</button>
+        </div>
+    </div>
+
+    <div class="profile-main">
+        <div class="avatar">
+            <img id="avatarImg">
+            <span id="avatarLetter"></span>
+        </div>
+
+        <div class="user-info">
+            <h1 id="username"></h1>
+            <div class="role" id="role"></div>
+        </div>
+
+        <div class="stats">
+            <div>
+                <div class="stat-title">Постов</div>
+                <div class="stat-value">0</div>
+            </div>
+
+            <div>
+                <div class="stat-title">Зарегистрирован</div>
+                <div class="stat-value" id="regDate"></div>
+            </div>
+
+            <div>
+                <div class="stat-title">Посещение</div>
+                <div class="stat-value">Только что</div>
+            </div>
+        </div>
+
+        <button class="my-content">▣ Мой контент</button>
+    </div>
+
+    <div class="layout">
+
+        <div class="sidebar">
+
+            <div class="side-box">
+                <div class="side-body reputation">
+                    <div class="side-title" style="background:none;padding:0;margin-bottom:12px;">Репутация</div>
+                    <div class="rep-number">0</div>
+                    <div class="muted">Нейтральная</div>
+                </div>
+            </div>
+
+            <div class="side-box">
+                <div class="side-body">
+                    <div class="warning-box">
+                        <div class="circle"></div>
+                        <div>
+                            <b>0 баллов предупреждений</b><br>
+                            <span class="muted">Никакие ограничения не применены</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-box">
+                <div class="side-title">Персональные данные</div>
+                <div class="side-body">
+                    <div class="personal-row">
+                        <b>Имя</b>
+                        <span id="personalName"></span>
+                    </div>
+
+                    <div class="personal-row">
+                        <b>Роль</b>
+                        <span id="personalRole"></span>
+                    </div>
+
+                    <div class="personal-row">
+                        <b>ID</b>
+                        <span>#186</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-box">
+                <div class="side-title">Заявка</div>
+                <div class="side-body">
+                    <div id="applicationStatus" class="app-status"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="content">
+
+            <div class="content-box">
+                <div class="tabs">
+                    <div class="tab active">Активность</div>
+                    <div class="tab">Изображения</div>
+                </div>
+
+                <div class="content-body">
+                    <div class="activity-empty">
+                        У пользователя отсутствует последняя активность
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal" id="editModal">
+    <div class="modal-box">
+        <h2>Изменить профиль</h2>
+
+        <label>Аватар</label>
+        <input type="file" id="avatarInput" accept="image/*">
+
+        <label>Баннер профиля</label>
+        <input type="file" id="coverInput" accept="image/*">
+
+        <div class="modal-actions">
+            <button class="close-btn" onclick="closeEditProfile()">Отмена</button>
+            <button onclick="saveProfileChanges()">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+if (localStorage.getItem("auth") !== "true") {
+    window.location.href = "login.html";
+}
+
+const username = localStorage.getItem("currentUser") || "Пользователь";
+const role = localStorage.getItem("role") || "user";
+
+document.getElementById("username").innerText = username;
+document.getElementById("role").innerText = role;
+document.getElementById("personalName").innerText = username;
+document.getElementById("personalRole").innerText = role;
+
+let regDate = localStorage.getItem("regDate_" + username);
+if (!regDate) {
+    regDate = new Date().toLocaleDateString("ru-RU");
+    localStorage.setItem("regDate_" + username, regDate);
+}
+document.getElementById("regDate").innerText = regDate;
+
+const avatarImg = document.getElementById("avatarImg");
+const avatarLetter = document.getElementById("avatarLetter");
+
+const avatarKey = "avatar_" + username;
+const savedAvatar = localStorage.getItem(avatarKey);
+
+if (savedAvatar) {
+    avatarImg.src = savedAvatar;
+    avatarImg.style.display = "block";
+    avatarLetter.style.display = "none";
+} else {
+    avatarLetter.innerText = username[0].toUpperCase();
+}
+
+const profileCover = document.getElementById("profileCover");
+const coverKey = "cover_" + username;
+const savedCover = localStorage.getItem(coverKey);
+
+if (savedCover) {
+    profileCover.style.backgroundImage = `
+        linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.25)),
+        url("${savedCover}")
+    `;
+}
+
+const applicationStatus = document.getElementById("applicationStatus");
+const applicationKey = "application_" + username;
+const application = JSON.parse(localStorage.getItem(applicationKey));
+
+if (application) {
+    applicationStatus.innerHTML = `
+        <b>На рассмотрении</b><br>
+        <span class="muted">Департамент:</span><br>
+        ${application.department}<br><br>
+        <span class="muted">Подана:</span><br>
+        ${application.date}
+    `;
+} else {
+    applicationStatus.innerHTML = `
+        <b>Не подана</b><br>
+        <span class="muted">У вас пока нет активной заявки</span>
+    `;
+}
+
+function openEditProfile() {
+    document.getElementById("editModal").style.display = "flex";
+}
+
+function closeEditProfile() {
+    document.getElementById("editModal").style.display = "none";
+}
+
+function saveProfileChanges() {
+    const avatarFile = document.getElementById("avatarInput").files[0];
+    const coverFile = document.getElementById("coverInput").files[0];
+
+    if (!avatarFile && !coverFile) {
+        alert("Выбери аватар или баннер");
+        return;
+    }
+
+    if (avatarFile) {
+        const avatarReader = new FileReader();
+
+        avatarReader.onload = function(e) {
+            const base64 = e.target.result;
+
+            localStorage.setItem(avatarKey, base64);
+
+            avatarImg.src = base64;
+            avatarImg.style.display = "block";
+            avatarLetter.style.display = "none";
+        };
+
+        avatarReader.readAsDataURL(avatarFile);
+    }
+
+    if (coverFile) {
+        const coverReader = new FileReader();
+
+        coverReader.onload = function(e) {
+            const base64 = e.target.result;
+
+            localStorage.setItem(coverKey, base64);
+
+            profileCover.style.backgroundImage = `
+                linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.25)),
+                url("${base64}")
+            `;
+        };
+
+        coverReader.readAsDataURL(coverFile);
+    }
+
+    alert("Профиль обновлён!");
+    closeEditProfile();
+}
+
+function goForum() {
+    window.location.href = "forum.html";
+}
+
+function logout() {
+    localStorage.removeItem("auth");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("role");
+    window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>

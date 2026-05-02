@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Test Role Play Forum</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #101010;
+    color: #d7d7d7;
+    font-family: Arial, sans-serif;
+}
+
+.hero {
+    height: 190px;
+    background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.65)),
+        url("banner.jpg");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    padding: 0 70px;
+}
+
+.play-link {
+    color:#4CAF50;
+    font-weight:bold;
+}
+
+.play-link:hover {
+    color:#6bd96b;
+}
+
+.logo {
+    font-size: 34px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.logo span {
+    color: #4CAF50;
+}
+
+.top-user {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav {
+    background: #1d1d1d;
+    padding: 16px 70px;
+    display: flex;
+    gap: 30px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.nav a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.nav a:hover {
+    color: white;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 35px 25px;
+}
+
+.breadcrumb {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 55px;
+}
+
+.main-title {
+    font-size: 30px;
+    color: #e6e6e6;
+    margin-bottom: 25px;
+}
+
+.text {
+    line-height: 1.7;
+    font-size: 16px;
+    color: #d0d0d0;
+}
+
+.text ul {
+    margin-top: 20px;
+}
+
+.text li {
+    margin: 8px 0;
+}
+
+.quote {
+    margin: 25px 0;
+    background: #2b2b2b;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.quote-title {
+    background: #242424;
+    padding: 14px 18px;
+    font-weight: bold;
+}
+
+.quote-body {
+    padding: 18px;
+    color: #d0d0d0;
+}
+
+.section {
+    margin-top: 30px;
+}
+
+.section h2 {
+    color: #e6e6e6;
+    margin-bottom: 15px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 20px;
+}
+
+.card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: white;
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 9px 15px;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+@media (max-width: 800px) {
+    .hero {
+        padding: 0 25px;
+        flex-direction: column;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .top-user {
+        margin-left: 0;
+    }
+
+    .nav {
+        padding: 15px 25px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="hero">
+    <div class="logo" onclick="goForum()">
+        <span>››</span> Test Role Play
+    </div>
+
+    <div class="top-user">
+        <span>Игрок: <b id="user"></b></span>
+    <button onclick="goProfile()">Профиль</button>
+    <button onclick="logout()">Выйти</button>
+    </div>
+</div>
+
+<div class="nav">
+    <a href="apply.html" class="play-link">➡️ | Начать играть</a>
+    <a href="forum.html">Главная</a>
+    <a href="dev.html">Форумы</a>
+    <a href="dev.html">Сообщество</a>
+    <a href="dev.html">Правила</a>
+    <a href="dev.html">Магазин</a>
+</div>
+
+<div class="container">
+
+    <div class="breadcrumb">Главная</div>
+
+    <h1 class="main-title">Test Role Play — RP-сообщество в GTA 5</h1>
+
+    <div class="text">
+        <p>
+            Мы — Role Play сообщество и игровой форум, созданный для общения игроков,
+            публикации новостей, обсуждения игровых ситуаций и развития проекта.
+        </p>
+
+        <ul>
+            <li>Мы делаем упор на атмосферу, общение и развитие сообщества.</li>
+            <li>Игроки могут создавать темы, обсуждать идеи и оставлять обращения.</li>
+            <li>Модераторы следят за порядком и помогают участникам форума.</li>
+            <li>Администрация управляет ролями, правами и разделами проекта.</li>
+        </ul>
+
+        <div class="quote">
+            <div class="quote-title">Цитата</div>
+            <div class="quote-body">
+                Role Play — это игра по ролям, где каждый игрок создаёт свою историю
+                и взаимодействует с другими участниками в рамках общего мира.
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Наша концепция</h2>
+        <p class="text">
+            Мы хотим создать удобный форум для игроков, где можно обсуждать новости,
+            оставлять жалобы, предлагать идеи и развивать игровое сообщество.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Разделы форума</h2>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Новости проекта</h3>
+                <p>Обновления, объявления и важная информация.</p>
+            </div>
+
+            <div class="card">
+                <h3>Общение игроков</h3>
+                <p>Свободное общение, обсуждения и игровые истории.</p>
+            </div>
+
+            <div class="card">
+                <h3>Жалобы и обращения</h3>
+                <p>Связь с администрацией и модераторами.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+if (localStorage.getItem("auth") !== "true") {
+    window.location.href = "login.html";
+}
+
+const currentUser = localStorage.getItem("currentUser");
+document.getElementById("user").innerText = currentUser;
+
+function goForum() {
+    window.location.href = "forum.html";
+}
+
+function goProfile() {
+    window.location.href = "profile.html";
+}
+
+function logout() {
+    localStorage.removeItem("auth");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("role");
+    window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>
